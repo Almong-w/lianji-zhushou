@@ -1,2 +1,2 @@
 # lianji-zhushou
-sillytavern
+sillytavern插件

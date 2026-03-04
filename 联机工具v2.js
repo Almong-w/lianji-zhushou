@@ -97,9 +97,14 @@ const injectStyles = () => {
 .multiplayer-panel{
   position:fixed;
   z-index:99999;
+  --mp-panel-viewport-gap:18px;
+  --mp-home-max-height:620px;
+  --mp-room-max-height:760px;
+  --mp-current-max-height:var(--mp-home-max-height);
   width:340px;
   min-height:44px;
-  height:min(560px, calc(100vh - 18px));
+  height:min(var(--mp-current-max-height), calc(100vh - var(--mp-panel-viewport-gap)));
+  max-height:calc(100vh - var(--mp-panel-viewport-gap));
   display:flex;
   flex-direction:column;
   overflow:hidden;
@@ -114,6 +119,12 @@ const injectStyles = () => {
   border-radius:10px;
   box-shadow:0 12px 30px rgba(49,51,57,.62);
   transition:border-color .24s ease, opacity .16s ease;
+}
+.multiplayer-panel.mode-home{
+  --mp-current-max-height:var(--mp-home-max-height);
+}
+.multiplayer-panel.mode-room{
+  --mp-current-max-height:var(--mp-room-max-height);
 }
 .multiplayer-panel.minimized{
   width:44px;
@@ -1049,7 +1060,16 @@ input[type="number"].settings-input{background:#393A41!important;}
 /* ===== Mobile 缩放（整体缩小一圈） ===== */
 @media (max-width: 768px), (hover: none) and (pointer: coarse){
 /* ===== Panel ===== */
-.multiplayer-panel{width:300px;min-height:40px;height:min(500px, calc(100vh - 12px));font-size:12px}
+.multiplayer-panel{
+  --mp-panel-viewport-gap:12px;
+  --mp-home-max-height:500px;
+  --mp-room-max-height:620px;
+  width:300px;
+  min-height:40px;
+  height:min(var(--mp-current-max-height), calc(100vh - var(--mp-panel-viewport-gap)));
+  max-height:calc(100vh - var(--mp-panel-viewport-gap));
+  font-size:12px;
+}
 
 .multiplayer-panel.minimized{width:40px;min-width:40px;height:40px;min-height:40px;max-height:40px}
 
@@ -6179,6 +6199,8 @@ const MultiplayerPanel = defineComponent({
                     minimized: isMinimized.value,
                     dragging: isDragging.value,
                     resizing: isResizing.value,
+                    'mode-home': store.mode === 'disconnected',
+                    'mode-room': store.mode !== 'disconnected',
                     'settings-open': !isMinimized.value && showSettings.value
                 }],
                 ref: panelRef
